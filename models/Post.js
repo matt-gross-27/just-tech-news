@@ -27,6 +27,7 @@ Post.init(
     user_id: {
       type: DataTypes.INTEGER,
       references: {
+        freezeTableName: 'true',
         model: 'user',
         key: 'id'
       }

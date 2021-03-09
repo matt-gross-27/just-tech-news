@@ -68,6 +68,7 @@ User.init(
     timestamps: false,
     // use underscores instead of camel-casing
     underscored: true,
+    freezeTableName: 'true',
     // make it so our model name stays lowercase in the database
     modelName: 'user'
   }
