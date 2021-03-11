@@ -50,15 +50,15 @@ Post.init(
     user_id: {
       type: DataTypes.INTEGER,
       references: {
-        freezeTableName: 'true',
+        freezeTableName: true,
         model: 'user',
         key: 'id'
-      }
+      }  
     }
   },
   {
     sequelize,
-    freezeTableName: 'true',
+    freezeTableName: true,
     underscored: true,
     modelName: 'post'
   }
