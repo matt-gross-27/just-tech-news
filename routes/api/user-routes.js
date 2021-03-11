@@ -1,11 +1,11 @@
 const router = require('express').Router();
-const { User } = require('../../models')
+const { User, Post, Vote } = require('../../models')
 
-// GET /api/users
+// GET /api/users - all users
 router.get('/', (req, res) => {
   // Access our User model and run .findAll() method
   User.findAll({
-    // attributes: { exclude: ['password'] }
+    attributes: { exclude: ['password'] }
   })
     .then(dbUserData => res.json(dbUserData))
     .catch(err => {
@@ -14,11 +14,23 @@ router.get('/', (req, res) => {
     });
 });
 
-// GET /api/users/id
+// GET /api/users/id - one user
 router.get('/:id', (req, res) => {
   User.findOne({
-    // attributes: { exclude: ['password'] },
-    where: { id: req.params.id }
+    attributes: { exclude: ['password'] },
+    where: { id: req.params.id },
+    include: [
+      {
+        model: Post,
+        attributes: ['id', 'title', 'post_url', 'created_at']
+      },
+      {
+        model: Post,
+        attributes: ['title'],
+        through: Vote,
+        as: 'voted_posts'
+      }
+    ]
   })
     .then(dbUserData => {
       if (!dbUserData) {
@@ -35,7 +47,7 @@ router.get('/:id', (req, res) => {
 
 // POST /api/users
 router.post('/', (req, res) => {
-  // expects req.body: {username: 'u', email: 'e@d.com', password:'secret'}
+  // expects req.body: { "username": "un", "email": "email@aol.com", "password": "secret" }
   User.create({
     username: req.body.username,
     email: req.body.email,
@@ -50,7 +62,7 @@ router.post('/', (req, res) => {
 
 // PUT /api/users/id
 router.put('/:id', (req, res) => {
-  // expects req.body: {username: 'u', email: 'e@d.com', password:'secret'}
+  // expects req.body: { "username": "un", "email": "email@aol.com", "password": "secret" }
   
   // if req.body has exact key/value pairs to match the model, you can just use `req.body` instead
   User.update(req.body, {

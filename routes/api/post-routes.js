@@ -1,10 +1,17 @@
 const router = require('express').Router();
-const { Post, User } = require('../../models');
+const { Post, User, Vote } = require('../../models');
+const sequelize = require('../../config/connection');
 
-// get all posts
+// GET /api/posts/ - get all posts
 router.get('/', (req, res) => {
   Post.findAll({
-    attributes: ['id', 'post_url', 'title', 'created_at'],
+    attributes: [
+      'id',
+      'post_url',
+      'title',
+      'created_at',
+      [sequelize.literal('(SELECT COUNT(*) FROM vote WHERE post.id = vote.post_id)'), 'vote_count']
+    ],
     order: [['created_at', 'DESC']],
     include: [
       {
@@ -20,13 +27,19 @@ router.get('/', (req, res) => {
     });
 });
 
-// get a post by id
+// GET /api/posts/:id - get post by id
 router.get('/:id', (req, res) => {
   Post.findOne({
     where: {
       id: req.params.id
     },
-    attributes: ['id', 'post_url', 'title', 'created_at'],
+    attributes: [
+      'id',
+      'post_url',
+      'title',
+      'created_at',
+      [sequelize.literal('(SELECT COUNT(*) FROM vote WHERE post.id = vote.post_id)'), 'vote_count']
+    ],
     include: [
       {
         model: User,
@@ -47,9 +60,9 @@ router.get('/:id', (req, res) => {
     });
 });
 
-// create a post
+// POST api/posts create a new post
 router.post('/', (req, res) => {
-  // expects { title: 'postTile', post_url: 'http://www...', user_id: 1 }
+  // expects req.body == { "title": "postTile", "post_url": "http://www...", "user_id": 1 }
   Post.create(req.body)
     .then(dbPostData => res.json(dbPostData))
     .catch(err => {
@@ -58,7 +71,19 @@ router.post('/', (req, res) => {
     });
 });
 
-// update a post title by id
+// PUT /api/posts/upvote - upvote a post
+router.put('/upvote', (req, res) => {
+  // expects req.body == { "user_id": INT, "post_id": INT }
+  // custom static method created in models/Post.js
+  Post.upvote(req.body, { Vote })
+    .then(updatedPostData => res.json(updatedPostData))
+    .catch(err => {
+      console.log(err);
+      res.status(400).json(err);
+    });
+});
+
+// PUT /api/posts/:id - update a post title by id
 router.put('/:id', (req, res) => {
   Post.update(
     { 
