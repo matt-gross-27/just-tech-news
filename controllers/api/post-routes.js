@@ -89,14 +89,23 @@ router.post('/', (req, res) => {
 
 // PUT /api/posts/upvote - upvote a post
 router.put('/upvote', (req, res) => {
-  // expects req.body == { "user_id": INT, "post_id": INT }
-  // custom static method created in models/Post.js
-  Post.upvote(req.body, { Vote })
-    .then(updatedPostData => res.json(updatedPostData))
-    .catch(err => {
-      console.log(err);
-      res.status(400).json(err);
-    });
+  // make sure session exists to get user
+  if (req.session) {
+    //pass session id along with all destructured properties on req.body
+    // custom static method created in models/Post.js
+    Post.upvote({
+      // expects { "post_id": INT, "user_id": INT }
+      // req.body == { "post_id": INT }
+      ...req.body, 
+      user_id: req.session.user_id 
+    }, 
+    { Vote, Comment, User })
+      .then(updatedVoteData => res.json(updatedVoteData))
+      .catch(err => {
+        console.log(err);
+        res.status(500).json(err);
+      });
+  }
 });
 
 // PUT /api/posts/:id - update a post title by id
