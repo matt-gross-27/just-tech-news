@@ -130,6 +130,17 @@ router.post('/login', (req, res) => {
   });
 });
 
+// POST /api/users/logout
+router.post('/logout', (req, res) => {
+  if (req.session.loggedIn) {
+    req.session.destroy(()=> {
+      res.status(204).end();
+    });
+  } else {
+    res.status(404).end();
+  }
+});
+
 // DELETE /api/users/id
 router.delete('/:id', (req, res) => {
   User.destroy({
