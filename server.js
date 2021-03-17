@@ -1,4 +1,5 @@
 const express = require('express');
+const dotenv = require('dotenv').config();
 const routes = require('./controllers');
 const path = require('path');
 const sequelize = require('./config/connection');
@@ -7,13 +8,14 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 const exphbs = require('express-handlebars');
-const hbs = exphbs.create({});
+const helpers = require('./utils/helpers');
+const hbs = exphbs.create({ helpers });
 
 const session = require('express-session');
 const SequelizeStore = require('connect-session-sequelize')(session.Store);
 
 const sess = {
-  secret: 'This is the biggest secret ever... Super bIg 9999999999...999 big',
+  secret: process.env.SESSION_SECRET,
   cookie: {},
   resave: false,
   saveUninitialized: true,
