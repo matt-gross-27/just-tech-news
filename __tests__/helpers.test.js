@@ -1,4 +1,4 @@
-const { format_date, format_plural, shorten_url } = require('../utils/helpers')
+const { format_date, format_plural, shorten_url, format_possessive } = require('../utils/helpers');
 
 test('format_date() returns a date string M/D/YYYY', () => {
   const date = new Date('2020-03-20 16:12:03');
@@ -24,4 +24,9 @@ test('shorten_url returns base url only xyz.com', () => {
   expect(url3).toBe('google.com');
   expect(url4).toBe('hello.com');
   expect(url5).toBe('hi.io');
+});
+
+test(`format_possessive adds 's or '`, () => {
+  expect(format_possessive('matt gross')).toBe("matt gross'");
+  expect(format_possessive('allie tiger')).toBe("allie tiger's")
 });

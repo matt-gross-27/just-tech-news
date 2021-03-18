@@ -4,8 +4,8 @@ module.exports = {
       +    `${new Date(date).getDate()}/`
       +       new Date(date).getFullYear().toString().substr(2,2);
   },
-  format_plural: (string, num) => {
-    return (num === 1 ? string : `${string}s`);
+  format_plural: (str, num) => {
+    return (num === 1 ? str : `${str}s`);
   },
   shorten_url: url => {
     return url
@@ -14,5 +14,8 @@ module.exports = {
       .replace('www.', '')
       .split('/')[0]
       .split('?')[0];
+  },
+  format_possessive: str => {
+    return (str.slice(-1).toLowerCase() === 's' ? `${str}'` : `${str}'s`)
   }
 }

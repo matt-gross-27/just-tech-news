@@ -78,8 +78,13 @@ router.get('/:id', (req, res) => {
 
 // POST api/posts create a new post
 router.post('/', (req, res) => {
-  // expects req.body == { "title": "postTile", "post_url": "http://www...", "user_id": 1 }
-  Post.create(req.body)
+  // expects req.body == { "title": "postTile", "post_url": "http://www..." }
+    // and req.session.user_id = { "user_id: 1" }
+  Post.create({
+    title: req.body.title,
+    post_url: req.body.post_url,
+    user_id: req.session.user_id
+  })
     .then(dbPostData => res.json(dbPostData))
     .catch(err => {
       console.log(err);

@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Just Tech News</title>
+  <link rel="shortcut icon" href="https://png.pngtree.com/png-vector/20190214/ourlarge/pngtree-technology-solution-icon-png-image_428190.jpg" type="image/jpg">
   <link rel="stylesheet" href="/stylesheets/style.css">
 </head>
 
@@ -15,13 +16,9 @@
         <a href="/">Just Tech News 
         </a>
       </h1>
-      <p>
-        {{#if loggedIn}}
-          <b>{{username}}</b>
-        {{/if}}
-      </p>
       <nav>
         {{#if loggedIn}}
+          <a href="/dashboard">{{format_possessive username}} Dashboard</a>
           <button id="logout" class="btn-no-style">Logout</button>
         {{else}}
           <a href="/login">Login</a>
