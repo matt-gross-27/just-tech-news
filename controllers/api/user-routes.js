@@ -55,7 +55,7 @@ router.get('/:id', (req, res) => {
 });
 
 // POST /api/users
-router.post('/', withAuth, (req, res) => {
+router.post('/', (req, res) => {
   // expects req.body: { "username": "un", "email": "email@aol.com", "password": "secret" }
   User.create({
     username: req.body.username,
@@ -68,7 +68,7 @@ router.post('/', withAuth, (req, res) => {
         req.session.username = dbUserData.username;
         req.session.loggedIn = true;
 
-        res.json(dbUserData);
+        res.json({ user: dbUserData, message: 'You are now logged in!' });
       });
     })
     .catch(err => {
