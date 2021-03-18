@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const { Post, User, Vote, Comment } = require('../../models');
 const sequelize = require('../../config/connection');
+const withAuth = require('../../utils/auth');
 
 // GET /api/posts/ - get all posts
 router.get('/', (req, res) => {
@@ -77,7 +78,7 @@ router.get('/:id', (req, res) => {
 });
 
 // POST api/posts create a new post
-router.post('/', (req, res) => {
+router.post('/', withAuth, (req, res) => {
   // expects req.body == { "title": "postTile", "post_url": "http://www..." }
     // and req.session.user_id = { "user_id: 1" }
   Post.create({
@@ -93,7 +94,7 @@ router.post('/', (req, res) => {
 });
 
 // PUT /api/posts/upvote - upvote a post
-router.put('/upvote', (req, res) => {
+router.put('/upvote', withAuth, (req, res) => {
   // make sure session exists to get user
   if (req.session) {
     //pass session id along with all destructured properties on req.body
@@ -114,11 +115,10 @@ router.put('/upvote', (req, res) => {
 });
 
 // PUT /api/posts/:id - update a post title by id
-router.put('/:id', (req, res) => {
+router.put('/:id', withAuth, (req, res) => {
   Post.update(
     { 
-      title: req.body.title,
-      post_url: req.body.post_url
+      title: req.body.title
     },
     { 
       where: {
@@ -139,19 +139,29 @@ router.put('/:id', (req, res) => {
     });
 });
 
-router.delete('/:id', (req, res) => {
-  Post.destroy({
+router.delete('/:id', withAuth, (req, res) => {
+  Comment.destroy({
     where: {
-      id: req.params.id
+      post_id: req.params.id
     }
   })
-    .then(dbPostData => {
-      if(!dbPostData) {
-        res.status(404).json({ message: 'No post found with this id' });
-        return;
-      }
-      res.json(dbPostData);
-    })
+    .then(
+      Post.destroy({
+        where: {
+          id: req.params.id
+        }
+      })
+        .then(dbPostData => {
+          if(!dbPostData) {
+            res.status(404).json({ message: 'No post found with this id' });
+            return;
+          }
+          res.json(dbPostData);
+        })
+        .catch(err => {
+          console.log(err);
+          res.status(500).json(err);
+        }))
     .catch(err => {
       console.log(err);
       res.status(500).json(err);
