@@ -24,8 +24,9 @@ router.get('/', (req, res) => {
       {
         model: User,
         attributes: ['username']
-      }
-    ]
+      }      
+    ],
+    order: [['id', 'DESC']]
   })
     .then(postData => {
       const posts = postData.map(post => post.get({ plain: true }));
@@ -77,7 +78,10 @@ router.get('/post/:id', (req, res) => {
         model: User,
         attributes: ['username']
       }
-    ]
+    ],
+    order: [
+      [Comment, 'created_at', 'DESC']
+    ],
   })
     .then(postData => {
       if (!postData) {

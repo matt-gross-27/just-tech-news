@@ -1,12 +1,15 @@
-      <article class="post">
-        <div class="title">
-          <a href="{{post_url}}" target="_blank">{{title}}</a>
-          <span>({{shorten_url post_url}})</span>
-        </div>
-        <div class="meta">
-          {{vote_count}} {{format_plural "like" vote_count}} by {{user.username}} on
-          {{format_date created_at}}
-          |
-          <a href="/post/{{id}}">{{comments.length}} {{format_plural "comment" comments.length}}</a>
-        </div>
-      </article>
+<hr>
+<article class="post row">
+  <div class="title col-12">
+    <a href="{{post_url}}" target="_blank">{{title}}</a>
+    <span>({{shorten_url post_url}})</span>
+  </div>
+  <div class="meta row">
+    <div class="col-12 ml-3">
+      <b>{{vote_count}} {{format_plural "like" vote_count}}</b>&nbsp by {{user.username}} on {{format_date created_at}}
+    </div>
+    <a class="col-12 ml-3" href="/post/{{id}}">
+      {{comments.length}} {{format_plural "comment" comments.length}}
+    </a>
+  </div>
+</article>

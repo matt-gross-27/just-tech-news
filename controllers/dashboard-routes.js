@@ -28,7 +28,8 @@ router.get('/', withAuth, (req, res) => {
         model: User,
         attributes: ['username']
       }
-    ]
+    ],
+    order: [['id', 'desc']]
   })
     .then(postData => {
       // serialize data before passing to templating engine
@@ -67,6 +68,9 @@ router.get('/edit/:id', withAuth, (req, res) => {
         model: User,
         attributes: ['username']
       }
+    ],
+    order: [
+      [Comment, 'created_at', 'DESC']
     ]
   })
     .then(postData => {

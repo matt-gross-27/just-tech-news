@@ -10,6 +10,14 @@ body, html {
   color: #333;
 }
 
+h2 {
+  font-size: 24px;
+}
+
+ol {
+  padding-inline-start: 24px;
+}
+
 a {
   text-decoration: none;
   color: #225ca3;
@@ -101,7 +109,6 @@ main {
   font-size: 100%;
   font-weight: bold;
   transition: color .1s;
-  margin-left: 16px;
 }
 
 .btn-no-style:hover {
