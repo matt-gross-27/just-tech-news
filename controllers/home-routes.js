@@ -81,7 +81,7 @@ router.get('/post/:id', (req, res) => {
     ],
     order: [
       [Comment, 'created_at', 'DESC']
-    ],
+    ]
   })
     .then(postData => {
       if (!postData) {
